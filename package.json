@@ -1,0 +1,29 @@
+{
+  "name": "CascadingTransitionGroup",
+  "version": "0.0.0",
+  "description": "A React component that transitions each of its children a little after the previous one.",
+  "main": "CascadingTransitionGroup.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:appsforartists/CascadingTransitionGroup.git"
+  },
+  "peerDependencies": {
+    "react": "0.11"
+  },
+  "keywords": [
+    "domino",
+    "cascade",
+    "overlapping",
+    "animation",
+    "transition",
+    "ecosystem:react"
+  ],
+  "author": "Brenton Simpson <git@appsforartists.com> (http://appsforartists.com)",
+  "bugs": {
+    "url": "https://github.com/appsforartists/CascadingTransitionGroup/issues"
+  },
+  "homepage": "https://github.com/appsforartists/CascadingTransitionGroup"
+}
