@@ -10,12 +10,16 @@ var CascadingTransitionGroupChild = require("./CascadingTransitionGroupChild.js"
 var CascadingTransitionGroup = React.createClass(
   {
     "propTypes":          {
-                            "delay":  React.PropTypes.number
+                            "component":      React.PropTypes.func,
+                            "innerComponent": React.PropTypes.func,
+                            "delay":          React.PropTypes.number
                           },
 
     "getDefaultProps":    function () {
                             return {
-                              "delay":  .05
+                              "component":      React.DOM.span,
+                              "innerComponent": React.DOM.span,
+                              "delay":          .05
                             }
                           },
 
@@ -49,6 +53,8 @@ var CascadingTransitionGroup = React.createClass(
                                       mount = { this.props.transitionMount }
                                       enter = { this.props.transitionEnter }
                                       leave = { this.props.transitionLeave }
+
+                                      component = { this.props.innerComponent }
                                     >
                                       { child }
                                     </CascadingTransitionGroupChild>;
