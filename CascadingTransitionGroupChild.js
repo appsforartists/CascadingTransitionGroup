@@ -49,28 +49,21 @@ var CascadingTransitionGroupChild = React.createClass(
                               // for optimum performance
 
                               var node = this.getDOMNode();
-
-                              node.className = `${ this.props.name }-${ state }-pending`;
+                              node.className = `${ this.props.name }-${ state }`;
 
                               setTimeout(
                                 () => {
-                                  node.className += ` ${ this.props.name }-${ state }`;
+                                  node.className += ` ${ this.props.name }-${ state }-active`;
 
-                                  setTimeout(
-                                    () => {
-                                      node.className += ` ${ this.props.name }-${ state }-active`;
-
-                                      ReactTransitionEvents.addEndEventListener(
-                                        node,
-                                        endListener
-                                      );
-                                    },
-
-                                    17 // must wait at least 1 frame to force animations to trigger
-                                       // requestAnimationFrame wasn't doing that consistently
+                                  ReactTransitionEvents.addEndEventListener(
+                                    node,
+                                    endListener
                                   );
                                 },
-                                this.props.delay * 1000
+
+                                // must wait at least 1 frame to force animations to trigger
+                                // requestAnimationFrame wasn't doing that consistently
+                                17 + this.props.delay * 1000
                               );
 
                               var endListener = (event) => {
