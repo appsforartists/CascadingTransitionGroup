@@ -22,109 +22,108 @@ var ReactTransitionEvents = require("react/lib/ReactTransitionEvents");
 
 var CascadingTransitionGroupChild = React.createClass(
   {
-    "propTypes":                  {
-                                    "name":       React.PropTypes.string.isRequired,
-                                    "delay":      React.PropTypes.number.isRequired,
-                                    "component":  React.PropTypes.func.isRequired,
+    "propTypes":            {
+                              "name":       React.PropTypes.string.isRequired,
+                              "delay":      React.PropTypes.number.isRequired,
+                              "component":  React.PropTypes.func.isRequired,
 
-                                    "mount":      React.PropTypes.bool,
-                                    "enter":      React.PropTypes.bool,
-                                    "leave":      React.PropTypes.bool,
+                              "appear":     React.PropTypes.bool,
+                              "enter":      React.PropTypes.bool,
+                              "leave":      React.PropTypes.bool,
+                            },
 
-                                  },
+    "getDefaultProps":      function () {
+                              return {
+                                "appear": true,
+                                "enter":  true,
+                                "leave":  true
+                              }
+                            },
 
-    "getDefaultProps":            function () {
-                                    return {
-                                      "mount": true,
-                                      "enter": true,
-                                      "leave": true
-                                    }
-                                  },
+    "queueTransition":      function (
+                              {
+                                state,
+                                hideUntilStart,
+                                completionCallback
+                              }
+                            ) {
+                              // Need to fall back into JS here anyway to set the event listener
+                              // so be like CSSTransitionGroup and manipulate the styles directly
+                              // for optimum performance
 
-    "queueTransition":            function (
-                                    {
-                                      state,
-                                      hideUntilStart,
-                                      completionCallback
-                                    }
-                                  ) {
-                                    // Need to fall back into JS here anyway to set the event listener
-                                    // so be like CSSTransitionGroup and manipulate the styles directly
-                                    // for optimum performance
+                              var node = this.getDOMNode();
 
-                                    var node = this.getDOMNode();
+                              node.style.display = hideUntilStart
+                                ? "none"
+                                : "";
 
-                                    node.style.display = hideUntilStart
-                                      ? "none"
-                                      : "";
+                              setTimeout(
+                                () => {
+                                  node.style.display = "";
+                                  node.className = `${ this.props.name }-${ state }`;
 
-                                    setTimeout(
-                                      () => {
-                                        node.style.display = "";
-                                        node.className = `${ this.props.name }-${ state }`;
+                                  setTimeout(
+                                    () => {
+                                      node.className += ` ${ this.props.name }-${ state }-active`;
 
-                                        setTimeout(
-                                          () => {
-                                            node.className += ` ${ this.props.name }-${ state }-active`;
+                                      ReactTransitionEvents.addEndEventListener(
+                                        node,
+                                        endListener
+                                      );
+                                    },
 
-                                            ReactTransitionEvents.addEndEventListener(
-                                              node,
-                                              endListener
-                                            );
-                                          },
+                                    17 // must wait at least 1 frame to force animations to trigger
+                                       // requestAnimationFrame wasn't doing that consistently
+                                  );
+                                },
+                                this.props.delay * 1000
+                              );
 
-                                          17 // must wait at least 1 frame to force animations to trigger
-                                             // requestAnimationFrame wasn't doing that consistently
-                                        );
-                                      },
-                                      this.props.delay * 1000
-                                    );
+                              var endListener = (event) => {
+                                node.className = "";
+                                ReactTransitionEvents.removeEndEventListener(node, endListener);
 
-                                    var endListener = (event) => {
-                                      node.className = "";
-                                      ReactTransitionEvents.removeEndEventListener(node, endListener);
+                                if (completionCallback)
+                                  completionCallback();
+                              };
+                            },
 
-                                      if (completionCallback)
-                                        completionCallback();
-                                    };
-                                  },
+    "componentWillAppear":  function (completionCallback) {
+                              this.queueTransition(
+                                {
+                                  "state":              "appear",
+                                  "hideUntilStart":     true,
+                                  "completionCallback": completionCallback
+                                }
+                              );
+                            },
 
-    "componentWillEnterOnMount":  function (completionCallback) {
-                                    this.queueTransition(
-                                      {
-                                        "state":              "mount",
-                                        "hideUntilStart":     true,
-                                        "completionCallback": completionCallback
-                                      }
-                                    );
-                                  },
+    "componentWillEnter":   function (completionCallback) {
+                              this.queueTransition(
+                                {
+                                  "state":              "enter",
+                                  "hideUntilStart":     true,
+                                  "completionCallback": completionCallback
+                                }
+                              );
+                            },
 
-    "componentWillEnter":         function (completionCallback) {
-                                    this.queueTransition(
-                                      {
-                                        "state":              "enter",
-                                        "hideUntilStart":     true,
-                                        "completionCallback": completionCallback
-                                      }
-                                    );
-                                  },
+    "componentWillLeave":   function (completionCallback) {
+                              this.queueTransition(
+                                {
+                                  "state":              "leave",
+                                  "hideUntilStart":     false,
+                                  "completionCallback": completionCallback
+                                }
+                              );
+                            },
 
-    "componentWillLeave":         function (completionCallback) {
-                                    this.queueTransition(
-                                      {
-                                        "state":              "leave",
-                                        "hideUntilStart":     false,
-                                        "completionCallback": completionCallback
-                                      }
-                                    );
-                                  },
-
-    "render":                     function () {
-                                    return this.props.component(
-                                      null,
-                                      this.props.children
-                                    );
-                                  }
+    "render":               function () {
+                              return this.props.component(
+                                null,
+                                this.props.children
+                              );
+                            }
   }
 );
 

@@ -50,9 +50,9 @@ var CascadingTransitionGroup = React.createClass(
                                       name  = { this.props.transitionName }
                                       delay = { this.props.delay * i }
 
-                                      mount = { this.props.transitionMount }
-                                      enter = { this.props.transitionEnter }
-                                      leave = { this.props.transitionLeave }
+                                      appear = { this.props.transitionAppear }
+                                      enter  = { this.props.transitionEnter }
+                                      leave  = { this.props.transitionLeave }
 
                                       component = { this.props.innerComponent }
                                     >
