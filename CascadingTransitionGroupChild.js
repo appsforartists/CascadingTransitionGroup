@@ -41,11 +41,8 @@ var CascadingTransitionGroupChild = React.createClass(
                             },
 
     "queueTransition":      function (
-                              {
-                                state,
-                                hideUntilStart,
-                                completionCallback
-                              }
+                              state,
+                              completionCallback
                             ) {
                               // Need to fall back into JS here anyway to set the event listener
                               // so be like CSSTransitionGroup and manipulate the styles directly
@@ -53,14 +50,11 @@ var CascadingTransitionGroupChild = React.createClass(
 
                               var node = this.getDOMNode();
 
-                              node.style.display = hideUntilStart
-                                ? "none"
-                                : "";
+                              node.className = `${ this.props.name }-${ state }-pending`;
 
                               setTimeout(
                                 () => {
-                                  node.style.display = "";
-                                  node.className = `${ this.props.name }-${ state }`;
+                                  node.className += ` ${ this.props.name }-${ state }`;
 
                                   setTimeout(
                                     () => {
@@ -90,31 +84,22 @@ var CascadingTransitionGroupChild = React.createClass(
 
     "componentWillAppear":  function (completionCallback) {
                               this.queueTransition(
-                                {
-                                  "state":              "appear",
-                                  "hideUntilStart":     true,
-                                  "completionCallback": completionCallback
-                                }
+                                "appear",
+                                completionCallback
                               );
                             },
 
     "componentWillEnter":   function (completionCallback) {
                               this.queueTransition(
-                                {
-                                  "state":              "enter",
-                                  "hideUntilStart":     true,
-                                  "completionCallback": completionCallback
-                                }
+                                "enter",
+                                completionCallback
                               );
                             },
 
     "componentWillLeave":   function (completionCallback) {
                               this.queueTransition(
-                                {
-                                  "state":              "leave",
-                                  "hideUntilStart":     false,
-                                  "completionCallback": completionCallback
-                                }
+                                "leave",
+                                completionCallback
                               );
                             },
 
